@@ -1,0 +1,102 @@
+#!/bin/bash
+#
+# Download and run the Twint Docker image.
+#
+
+# Errors are fatal
+set -e
+
+#
+# Are we running the full version? (Lite version by default)
+#
+NAME="dmuth1/twint-lite"
+FULL=""
+
+# The name of any Python script we're running
+SCRIPT=""
+
+# Any -v parameters to pass into Docker, such as for Python scripts
+DOCKER_V=""
+
+# Additional args to pass into Docker, such as for Python scripts
+DOCKER_ARGS=""
+
+#
+# Set a default timeout if we don't have one
+#
+TWINT_TIMEOUT=${TWINT_TIMEOUT:-120}
+
+if test "$1" == "full"
+then
+	NAME="dmuth1/twint-full"
+	FULL="full"
+	shift
+
+elif test "$1" == "--run-python-script"
+then
+
+	if test ! "$2"
+	then
+		echo "! "
+		echo "! --run-python script specified, but no file specified as arg!"
+		echo "! "
+		exit 1
+
+	elif test ! -f "$2"
+	then
+		echo "! "
+		echo "! --run-python-script specified, but file $2 does not exist!"
+		echo "! "
+		exit 1
+	fi
+
+	SCRIPT=$2
+	shift 2
+
+	#
+	# Get the basename of the script and the full directory path it is in
+	#
+	SCRIPT_NAME=$(basename ${SCRIPT})
+	pushd $(dirname $SCRIPT) > /dev/null
+	SCRIPT_DIR=$PWD
+	popd > /dev/null
+
+	DOCKER_V="-v ${SCRIPT_DIR}:/python-scripts"
+	DOCKER_ARGS="--run-python-script /python-scripts/${SCRIPT_NAME}"
+
+	echo "# --run-python-script specified, including these arguments to Docker:"
+	echo "#	${DOCKER_V}"
+	echo "#	${DOCKER_ARGS}"
+
+elif test "$1" == "-h"
+then
+
+	if test "$2" -a "$2" == "twint"
+	then
+		exec docker run ${NAME} -h
+	fi
+
+	echo "# "
+	echo "# Syntax: twint (twint options | --run-python-script /path/to/script )"
+	echo "# "
+	echo "#		twint options - Options to pass into twint"
+	echo "#		--run-python-script	- Run the specified script in the Docker container"
+	echo "#		-h twint - Get twint-specific options."
+	echo "# "
+	exit
+
+fi
+
+#
+# Now run our image with the passed in arguments.
+# Point /mnt to the current directory so files can be written.
+#
+echo "# "
+echo "# You are running Twint Splunk, built from: https://github.com/dmuth/twint-splunk"
+echo "# Go to https://github.com/twintproject/twint for the official webpage and documentation."
+echo "# "
+echo "# Args: $@ "
+echo "# "
+docker run -v $(pwd):/mnt -e TWINT_TIMEOUT=${TWINT_TIMEOUT} ${DOCKER_V} ${NAME} ${DOCKER_ARGS} $@
+
+
