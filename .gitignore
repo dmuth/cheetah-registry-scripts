@@ -3,6 +3,9 @@
 *~
 *.swp
 
-user.json
-users.json
+# Tempfile with user info
+tmp.json
+
+# Directory with user info
+users/
 

@@ -35,16 +35,24 @@ then
 fi
 
 # Our tempfile for users
-USER_JSON=user.json
+USER_JSON=tmp.json
 
 for USER in $(cat $FILE)
 do
+	TARGET=users/${USER}.json
+	if test -f ${TARGET}
+	then
+		echo "# User info already downloaded ${USER}, skipping!"
+		continue
+	fi
+
 	echo "# Fetching user info for ${USER}..."
 	./twint --user-full -u ${USER} --json -o $USER_JSON
-	cat $USER_JSON >> users.json
+	mv $USER_JSON ${TARGET}
+
 done
 
 # Remove our tempfile
-rm $USER_JSON
+rm -f $USER_JSON
 
 
