@@ -2,6 +2,8 @@
 
 # Cheetah Registry Scripts
 
+<img src="img/cheetah-saying-hi.png" align="right" width="250" />
+
 This GitHub repo holds supporting scripts that are used to ingest info on cheetahs from Twitter into my <a href="https://cheetah-list.glideapp.io/">Cheetah Registry App</a>.
 
 
@@ -34,6 +36,12 @@ From <a href="https://www.makeuseof.com/tag/backup-export-twitter-lists/">the in
 - <a href="https://github.com/dmuth/splunk-twint">Splunk-Twint</a>
    - A Dockerized wrapper for running Twint
 - <a href="https://imgur.com/a/euc9ryC">My cheetah images stored on Imgur</a>
+
+
+# Credits
+
+- The icon shown above is part of the Cheetah Telegram sticker pack, drawn by <a href="https://twitter.com/cinnamonsp0ts">Cinnamon Spots</a>
+
 
 
 
